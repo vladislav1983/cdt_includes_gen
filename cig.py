@@ -16,10 +16,15 @@ def folders(root, fileSuffixes) :
     """
     folders = set()
     for path, subFolders, files in os.walk(root):
+        subFolders.sort()
         files = [fileName for fileName in files if os.path.splitext(fileName)[1] in fileSuffixes]
         if files:
+            path = path.replace(root,'/${ProjName}')
+            path = path.replace('\\','/')
             folders.add(path)
 
+    folders = sorted(folders)
+    
     return folders
 
 def generateXML(outFileName, CIncludes, CppIncludes):
@@ -42,7 +47,7 @@ def generateXML(outFileName, CIncludes, CppIncludes):
             if lst:
                 outFile.write ('<language name="' + name +' Source File">\n') 
                 for directory in lst:
-                    outFile.write('<includepath>' + directory + '</includepath>' + '\n')
+                    outFile.write('<includepath workspace_path="true">' + directory + '</includepath>' + '\n')
                 outFile.write('</language>\n')
         outFile.write('</section>\n')
         outFile.write('</cdtprojectproperties>\n')  
